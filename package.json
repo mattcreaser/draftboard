@@ -1,0 +1,15 @@
+{
+  "name": "draftboard",
+  "version": "0.0.0",
+  "description": "A simple project to help run my fantasy football draft.",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattcreaser/draftboard.git"
+  },
+  "author": "Matt Creaser",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "backbone": "1.0.0"
+  }
+}
