@@ -1,9 +1,49 @@
 * {
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+html, body, #draftboard {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    background-color: #ddd;
+  background-color: #ddd;
 }
+
+table {
+  border-collapse: collapse;
+  height: 100%;
+  width: 100%;
+}
+
+th, td {
+  background-color: #fff;
+  border: 1px solid #000;
+  height: 40px;
+  overflow: hidden;
+  width: 8%;
+}
+
+th:first-child {
+  width: 4%;
+}
+
+/*--- Timer Styles ---*/
+
+.timer {
+  font-weight: bold;
+}
+
+.timerOverdue {
+  color: #f00;
+}
+
+.timerLong {
+  color: #ff0;
+}
+
+/*--- End Timer Styles ---*/
