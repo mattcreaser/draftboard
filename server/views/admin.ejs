@@ -1,7 +1,38 @@
 <% layout('layout') %>
 
-<ul>
-<% for (var i = 0; i < drafts.length; ++i) { %>
-  <li><%= drafts[i].name %></li>
+
+<% 
+  for (var i = 0; i < drafts.length; ++i) { 
+    var draft = drafts[i];
+%>
+  <div>
+    <h2><%= draft.name %></h2>
+  <table>
+    <tr>
+      <th>Draft Slot</th><th>Drafter Name</th><th>Drafter Join Link</th>
+      <th colspan="2">Invitation</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for (var j = 0; j < draft.drafters.length; ++j) { %>
+  <%   var drafter = draft.drafters[j]; %>
+    <tr>
+      <td><%= drafter.slot %></td>
+      <td><%= drafter.name %></td>
+      <td><a href="<%= drafter.joinUrl %>"><%= drafter.joinUrl %></a></td>
+      <td><input type="email" value="<%= drafter.email || '' %>" placeholder="Enter an invitation email here" /></td>
+      <td><button>Send Invitation</button></td>
+    </tr>
+  <% } %>
+  </tbody>
+  </table>
+
+  <form action="/admin" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" />
+    <input type="hidden" name="draft" value="<%= draft.id %>" />
+    <input type="submit" value="Add Drafter" />
+  </form>
+
+  </div>
 <% } %>
-</ul>

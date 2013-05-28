@@ -1,5 +1,6 @@
 var admin = module.exports;
 var logger = require('just-logging').getLogger();
+var async = require('async');
 var database = require('../database');
 
 admin.get = function(req, res) {
@@ -9,9 +10,39 @@ admin.get = function(req, res) {
   database.all('SELECT * FROM drafts ORDER BY drafts.id', function(err, drafts) {
     if (err) return res.send(500);
 
-    console.dir(drafts);
-
-
-    res.render('admin', { drafts: drafts});
+    // TODO : This should be done with a JOIN instead of nested SELECTs.
+    async.each(drafts, function(draft, cb) {
+      database.all('SELECT * FROM drafters WHERE drafters.draft = ? ORDER BY drafters.slot', draft.id, function(err, drafters) {
+        if (err) return cb(err);
+        draft.drafters = drafters;
+        cb();
+      });
+    }, function(err) {
+      if (err) return res.send(500);
+      res.render('admin', { drafts: drafts });
+    });
   });
+};
+
+/**
+ *
+ */
+admin.post = function(req, res) {
+  var name = req.body.name;
+  var joinUrl = 'http://www.something.com/1234';
+  var draft = req.body.draft;
+
+  // Handler for when the database insertion is complete.
+  function inserted(err) {
+    if (err) {
+      logger.error('Could not add drafter:', err);
+      return res.send(500);
+    }
+
+    res.redirect('/admin');
+  }
+
+  logger.debug('Adding', name, 'to draft', draft);
+  database.run('INSERT INTO drafters (name, draft, slot, joinUrl) VALUES (?, ?, ?, ?)',
+               name, draft, 0, joinUrl, inserted);
 };
