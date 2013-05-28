@@ -3,11 +3,15 @@ var async = require('async');
 var logger = require('just-logging').getLogger();
 var engine = require('ejs-locals');
 
+var config = require('./config/config');
+
 var app = expressio();
 app.http().io();
 
 app.configure(function() {
   app.use(expressio.static(__dirname + '/client'));
+//  app.use(expressio.cookieParser());
+//  app.use(expressio.session({ secret: 'draftboard' }));
   app.use(expressio.bodyParser());
 
   app.engine('ejs', engine);
@@ -18,7 +22,8 @@ app.configure(function() {
 const INITIALIZATION_MODULES = ['database', 'authentication', 'controllers'];
 
 /**
- * Helper function for module initialization. Each module MUST have
+ * Helper function for module initialization. Each module MUST have an
+ * initialize method.
  */
 function initializeModule(moduleName, cb){
   logger.debug('Initializing ' + moduleName);
@@ -39,7 +44,7 @@ async.eachSeries(INITIALIZATION_MODULES, initializeModule, function(err) {
 
   if (err) { logger.error('Unable to start server:', err); return; }
 
-  var port = 3000;
+  var port = config.server.port;
   logger.info('Initialization complete. Listening for connections on port', port);
   app.listen(port);
 
