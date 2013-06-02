@@ -20,7 +20,7 @@ function exposeMethod(name) {
 }
 
 database.initialize = function(app, cb) {
-  db = new sqlite.Database('./database/db.sqlite', function(err) {
+  db = new sqlite.Database(__dirname + '/database/db.sqlite', function(err) {
     if (err) return cb(err);
     METHODS.forEach(exposeMethod);
     cb();

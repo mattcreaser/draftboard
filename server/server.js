@@ -9,6 +9,7 @@ var app = expressio();
 app.http().io();
 
 app.configure(function() {
+
   app.use(expressio.static(__dirname + '/client'));
 //  app.use(expressio.cookieParser());
 //  app.use(expressio.session({ secret: 'draftboard' }));
@@ -16,6 +17,7 @@ app.configure(function() {
 
   app.engine('ejs', engine);
   app.set('view engine', 'ejs');
+  app.use('views', __dirname + '/views');
 
 });
 

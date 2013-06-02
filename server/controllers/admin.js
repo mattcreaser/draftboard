@@ -1,7 +1,9 @@
 var admin = module.exports;
 var logger = require('just-logging').getLogger();
 var async = require('async');
+
 var database = require('../database');
+var Drafter = require('../models/Drafter');
 
 admin.get = function(req, res) {
 
@@ -32,17 +34,20 @@ admin.post = function(req, res) {
   var joinUrl = 'http://www.something.com/1234';
   var draft = req.body.draft;
 
-  // Handler for when the database insertion is complete.
-  function inserted(err) {
+  logger.debug('Adding', name, 'to draft', draft);
+
+  var drafter = new Drafter({
+    name: name,
+    draft: draft,
+    joinUrl: joinUrl,
+    slot: 0
+  });
+
+  drafter.save(function(err) {
     if (err) {
       logger.error('Could not add drafter:', err);
       return res.send(500);
     }
-
     res.redirect('/admin');
-  }
-
-  logger.debug('Adding', name, 'to draft', draft);
-  database.run('INSERT INTO drafters (name, draft, slot, joinUrl) VALUES (?, ?, ?, ?)',
-               name, draft, 0, joinUrl, inserted);
+  });
 };
