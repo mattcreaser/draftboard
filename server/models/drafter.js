@@ -2,32 +2,14 @@
  * @fileOverview
  */
 
-var _ = require('lodash');
+module.exports = function(db, cb) {
 
-var models = require('../models');
+  db.define('drafter', {
+    name: String,
+    slot: Number,
+    joinUrl: String,
+    email: String
+  });
 
-function Drafter(data) {
-  _.each(Drafter.FIELDS, function(field) {
-    this[field] = data[field];
-  }.bind(this));
-
-  this.id = data.id;
-}
-
-Drafter.prototype.save = function(cb) {
-  models.save(this, cb);
+  return cb();
 };
-
-Drafter.prototype.load = function(cb) {
-  models.load(this, cb);
-};
-
-Drafter.FIELDS = [
-  'draft',
-  'name',
-  'slot',
-  'joinUrl',
-  'email'
-];
-
-module.exports = Drafter;
