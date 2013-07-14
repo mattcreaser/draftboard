@@ -1,6 +1,6 @@
+var authentication = module.exports;
 
-module.exports.initialize = function(app, cb) {
-
+authentication.initialize = function(app, cb) {
 
   // All done initialization, call the callback function.
   cb();

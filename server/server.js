@@ -9,19 +9,23 @@ var app = expressio();
 app.http().io();
 
 app.configure(function() {
+  console.log(__dirname);
 
-  app.use(expressio.static(__dirname + '/client'));
-//  app.use(expressio.cookieParser());
-//  app.use(expressio.session({ secret: 'draftboard' }));
+  var maxAge = 365 * 24 * 60 * 60 * 1000; // one year.
+  app.use('/static', expressio.static(__dirname + '/../client'), { maxAge: maxAge });
+
+  app.use(expressio.cookieParser());
+  app.use(expressio.session({ secret: 'draftboard' }));
+
   app.use(expressio.bodyParser());
 
   app.engine('ejs', engine);
   app.set('view engine', 'ejs');
-  app.use('views', __dirname + '/views');
+  app.set('views', __dirname + '/views');
 
 });
 
-const INITIALIZATION_MODULES = ['database', 'authentication', 'controllers', 'models'];
+const INITIALIZATION_MODULES = ['authentication', 'controllers', 'models'];
 
 /**
  * Helper function for module initialization. Each module MUST have an

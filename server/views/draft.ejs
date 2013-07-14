@@ -1,0 +1,41 @@
+<% layout('layout') %>
+<% script('http://code.jquery.com/jquery-1.10.0.min.js') %>
+<% script('http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js') %>
+<% script('static/js/lodash.js') %>
+<% script('socket.io/socket.io.js') %>
+<% script('static/js/picker.js') %>
+<% stylesheet('http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css') %>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<div data-role="page" id="blank">
+</div>
+
+<div data-role="page" id="pick">
+
+  <div data-role="header" data-position="fixed">
+    <nav data-role="navbar">
+      <ul>
+        <li><a href="#">QB</a></li>
+        <li><a href="#">RB</a></li>
+        <li><a href="#">WR</a></li>
+        <li><a href="#">TE</a></li>
+        <li><a href="#" class="ui-btn-active">ALL</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div data-role="content">
+    <ul data-role="listview" data-filter="true" data-filter-placeholder="Filter Players" id="playerlist">
+    </ul>
+  </div>
+
+  <div data-role="footer" data-position="fixed">
+    <a data-role="button">Make Pick</a>
+  </div>
+
+</div>
+
+<div data-role="page" id="waiting">
+  Please wait for your turn to draft.
+</div>

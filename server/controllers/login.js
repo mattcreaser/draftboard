@@ -1,3 +1,10 @@
+/**
+ * @fileOverview
+ * This file is the controller for the login view.
+ */
+
+var auth = require('../lib/auth');
+
 var login = module.exports;
 
 login.get = function(req, res) {
@@ -8,7 +15,12 @@ login.post = function(req, res) {
   var email = req.body.email;
   var password = req.body.password;
 
-  // TODO : Authenticate login.
+  auth.verify(email, password, function(err, account) {
+    if (err) {
+      res.send(403);
+    }
 
-  res.redirect('/admin');
+    req.session.account = account;
+    res.redirect('/admin');
+  });
 };

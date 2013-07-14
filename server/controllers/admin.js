@@ -1,53 +1,43 @@
 var admin = module.exports;
 var logger = require('just-logging').getLogger();
 var async = require('async');
+var hat = require('hat');
 
-var database = require('../database');
-var Drafter = require('../models/Drafter');
+var models = require('../models');
+var auth = require('../lib/auth');
+
+// Use a hat rack to generate unique join URLs for new drafter instances. The
+// rack checks for collisions.
+var rack = hat.rack();
 
 admin.get = function(req, res) {
+  models.drafter.find(function(err, drafters) {
+    if (err) return res.status(500).send(err);
 
-  // Get all of the user's drafts.
-  // TODO : limit drafts to current logged-in user.
-  database.all('SELECT * FROM drafts ORDER BY drafts.id', function(err, drafts) {
-    if (err) return res.send(500);
-
-    // TODO : This should be done with a JOIN instead of nested SELECTs.
-    async.each(drafts, function(draft, cb) {
-      database.all('SELECT * FROM drafters WHERE drafters.draft = ? ORDER BY drafters.slot', draft.id, function(err, drafters) {
-        if (err) return cb(err);
-        draft.drafters = drafters;
-        cb();
-      });
-    }, function(err) {
-      if (err) return res.send(500);
-      res.render('admin', { drafts: drafts });
-    });
+    res.render('admin', { drafters: drafters });
   });
 };
+
+admin.get.middleware = auth.middleware;
 
 /**
  *
  */
 admin.post = function(req, res) {
   var name = req.body.name;
-  var joinUrl = 'http://www.something.com/1234';
-  var draft = req.body.draft;
+  var joinId = rack();
 
-  logger.debug('Adding', name, 'to draft', draft);
-
-  var drafter = new Drafter({
+  models.drafter.create({
     name: name,
-    draft: draft,
-    joinUrl: joinUrl,
+    joinId: joinId,
     slot: 0
-  });
+  }, function(err, items) {
 
-  drafter.save(function(err) {
-    if (err) {
-      logger.error('Could not add drafter:', err);
-      return res.send(500);
-    }
+    if (err) return res.status(500).send(err);
+
     res.redirect('/admin');
+
   });
 };
+
+admin.post.middleware = auth.middleware;

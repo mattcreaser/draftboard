@@ -4,6 +4,8 @@ var logger = require('just-logging').getLogger();
 
 const JAVASCRIPT_FILE_REGEX = /\.js$/;
 
+function defaultMiddleware(req, res, next) { next(); }
+
 function initializeController(app, fileName, cb) {
   // Skip any non-js files in the controller directory (such as vim swap files)
   if (!fileName.match(JAVASCRIPT_FILE_REGEX)) {
@@ -17,16 +19,21 @@ function initializeController(app, fileName, cb) {
   // Load the module.
   var controller = require('./controllers/' + moduleName);
 
+  var middleware;
+
   // Map the GET method for the controller if it exists.
   if (controller.get) {
     logger.info('Mapping GET for /' + moduleName + ' controller');
-    app.get('/' + moduleName, controller.get);
+    var extra = controller.get.param ? '/:' + controller.get.param : '';
+    middleware = controller.get.middleware || defaultMiddleware;
+    app.get('/' + moduleName + extra, controller.get);
   }
 
   // Map the POST method for the controller if it exists.
   if (controller.post) {
     logger.info('Mapping POST for /' + moduleName + ' controller');
-    app.post('/' + moduleName, controller.post);
+    middleware = controller.post.middleware || defaultMiddleware;
+    app.post('/' + moduleName, middleware, controller.post);
   }
 
   // If the controller exposes an initialize method then call that. Otherwise
