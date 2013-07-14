@@ -7,8 +7,7 @@
 var controller = module.exports;
 
 controller.get = function(req, res) {
-
-
+  res.render('board');
 };
 
-controller.get.param = 'id';
+//controller.get.param = 'id';
