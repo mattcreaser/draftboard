@@ -35,4 +35,7 @@ join.get = function(req, res) {
   });
 };
 
-join.get.param = 'id';
+join.initialize = function(app, cb) {
+  app.get('/join/:id', join.get);
+  cb();
+};

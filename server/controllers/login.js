@@ -24,3 +24,9 @@ login.post = function(req, res) {
     res.redirect('/admin');
   });
 };
+
+login.initialize = function(app, cb) {
+  app.get('/login', login.get);
+  app.post('/login', login.post);
+  cb();
+};

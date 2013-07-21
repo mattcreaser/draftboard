@@ -11,3 +11,8 @@ controller.get = function(req, res) {
 };
 
 //controller.get.param = 'id';
+
+controller.initialize = function(app, cb) {
+  app.get('/board', controller.get);
+  cb();
+};

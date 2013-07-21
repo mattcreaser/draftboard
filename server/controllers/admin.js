@@ -18,8 +18,6 @@ admin.get = function(req, res) {
   });
 };
 
-admin.get.middleware = auth.middleware;
-
 /**
  *
  */
@@ -40,4 +38,8 @@ admin.post = function(req, res) {
   });
 };
 
-admin.post.middleware = auth.middleware;
+admin.initialize = function(app, cb) {
+  app.get('/admin', auth.middleware, admin.get);
+  app.post('/admin', auth.middleware, admin.post);
+  cb();
+};
