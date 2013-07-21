@@ -40,6 +40,13 @@ function defineModels(db, cb) {
     isAdmin: Boolean
   });
 
+  var player = models.player = db.define('player', {
+    firstname: String,
+    lastname: String,
+    team: String,
+    position: String
+  });
+
   // There are many drafters to one draft.
   //drafter.hasOne('draft', draft, { reverse: 'drafters', required: true });
 

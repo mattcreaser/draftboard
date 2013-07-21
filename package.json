@@ -9,6 +9,10 @@
   },
   "author": "Matt Creaser",
   "readmeFilename": "README.md",
+  "devDependencies": {
+    "commander": "2.0.0",
+    "line-reader": "0.2.3"
+  },
   "dependencies": {
     "backbone": "1.0.0",
     "express.io": "1.1.11",
