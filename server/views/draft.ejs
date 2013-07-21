@@ -16,11 +16,11 @@
   <div data-role="header" data-position="fixed">
     <nav data-role="navbar">
       <ul>
-        <li><a href="#">QB</a></li>
+        <li><a href="#" class="ui-btn-active">QB</a></li>
         <li><a href="#">RB</a></li>
         <li><a href="#">WR</a></li>
         <li><a href="#">TE</a></li>
-        <li><a href="#" class="ui-btn-active">ALL</a></li>
+        <li><a href="#">K/DEF</a></li>
       </ul>
     </nav>
   </div>
@@ -31,7 +31,7 @@
   </div>
 
   <div data-role="footer" data-position="fixed">
-    <a data-role="button">Make Pick</a>
+    <a data-role="button" data-icon="check" data-iconpos="bottom" data-inline="false">Make Pick</a>
   </div>
 
 </div>
@@ -39,3 +39,7 @@
 <div data-role="page" id="waiting">
   Please wait for your turn to draft.
 </div>
+
+<script>
+  var players = <%- JSON.stringify(players) %>;
+</script>

@@ -6,7 +6,10 @@
 
 var draft = module.exports;
 
+var _ = require('lodash');
 var logger = require('just-logging').getLogger();
+
+var models = require('../models');
 
 draft.get = function(req, res) {
   if (!req.session.drafter) {
@@ -14,7 +17,17 @@ draft.get = function(req, res) {
     return res.send(403);
   }
 
-  res.render('draft', {
-    drafter: req.session.drafter
+  models.player.find(['lastname', 'firstname'], function(err, players) {
+    if (err) {
+      return res.status(500).send();
+    }
+
+    players = _.groupBy(players, function(player) { return player.position; });
+
+    res.render('draft', {
+      drafter: req.session.drafter,
+      players: players
+    });
   });
+
 };

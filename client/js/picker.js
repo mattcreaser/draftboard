@@ -1,36 +1,13 @@
 /*jshint browser:true */
-/*global $, io, _ */
-
-var players = {
-  QB: [
-    { name: 'T. Brady', team: 'New England Patriots' },
-    { name: 'P. Manning', team: 'Denver Broncos' }
-  ],
-  RB: [
-    { name: 'A. Peterson', team: 'Minnesota Vikings' },
-    { name: 'S. Ridley', team: 'New England Patriots' }
-  ],
-  WR: [
-    { name: 'D. Amendola', team: 'New England Patriots' },
-    { name: 'C. Johnson', team: 'Detroit Lions' }
-  ],
-  TE: [
-    { name: 'R. Gronkowski', team: 'New England Patriots' },
-    { name: 'V. Davis', team: 'San Francisco 49ers' }
-  ],
-  K: [
-    { name: 'S. Gostkowski', team: 'New England Patriots' },
-    { name: 'S. Janikowski', team: 'Oakland Raiders' }
-  ],
-  DEF: [
-    { name: 'DEF', team: 'New England Patriots' },
-    { name: 'DEF', team: 'Green Bay Packers' }
-  ]
-};
+/*global $, io, _, players */
 
 var picker = {
 
+  // The socket.io connection.
   _socket: null,
+
+  // The selected li element.
+  _selected: null,
 
   /**
    *
@@ -60,31 +37,57 @@ var picker = {
   connected: function() {
     $.mobile.loading('hide');
     $.mobile.changePage('#pick', { changeHash: false });
-    this.showList('ALL');
+    this.showList('QB');
   },
 
+  /**
+   *
+   */
   setupNavbar: function() {
     $('nav a').click(function() {
       picker.showList($(this).text());
     });
   },
 
+  /**
+   *
+   */
   showList: function(page) {
     var list = players[page] || [];
-    if (page === 'ALL') {
-      _.each(players, function(l) { list = list.concat(l); });
+    if (page === 'K/DEF') {
+      list = players.K.concat(players.DEF);
     }
 
     var elem = $('#playerlist');
 
     elem.empty();
+    this._selected = null;
 
+    var self = this;
     _.each(list, function(player) {
-      var a = $('<a/>').attr('href', '#').text(player.name + ', ' + player.team);
-      $('<li/>').append(a).appendTo(elem);
+      var a = $('<a/>').attr('href', '#')
+        .text(player.firstname + ' ' + player.lastname + ', ' + player.team);
+      $('<li/>').append(a).appendTo(elem).click(_.bind(self.select, self));
     });
 
     elem.listview('refresh');
+  },
+
+  /**
+   *
+   */
+  select: function(e) {
+    if (this._selected) {
+      $(this._selected).attr("data-theme", "c").removeClass("ui-btn-up-b")
+                       .removeClass('ui-btn-hover-b').addClass("ui-btn-up-c")
+                       .addClass('ui-btn-hover-c');
+    }
+
+    $(e.currentTarget).attr("data-theme", "b").removeClass("ui-btn-up-c")
+                      .removeClass('ui-btn-hover-c').addClass("ui-btn-up-b")
+                      .addClass('ui-btn-hover-b');
+
+    this._selected = e.currentTarget;
   }
 };
 
