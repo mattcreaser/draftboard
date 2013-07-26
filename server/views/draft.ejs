@@ -8,9 +8,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<div data-role="page" id="blank">
-</div>
-
 <div data-role="page" id="pick">
 
   <div data-role="header" data-position="fixed">
@@ -30,16 +27,29 @@
     </ul>
   </div>
 
-  <div data-role="footer" data-position="fixed">
-    <a data-role="button" data-icon="check" data-iconpos="bottom" data-inline="false">Make Pick</a>
+  <div id="footer" data-role="footer" data-position="fixed">
+    <a id="makePick" data-role="button" data-icon="check" data-iconpos="bottom" data-inline="false" href="#pickConfirm" data-rel="popup" data-position-to="window">Make Pick</a>
   </div>
 
+  <div id="pickConfirm" data-role="popup" data-dismissable="false" data-overlay-theme="a" class="ui-content">
+    <div id="playerConfirm"></div>
+    <a data-role="button" data-rel="back">Cancel</a>
+    <a data-role="button" id="confirmPick">Confirm Pick</a>
+  </div>
 </div>
 
 <div data-role="page" id="waiting">
   Please wait for your turn to draft.
 </div>
 
+
 <script>
   var players = <%- JSON.stringify(players) %>;
+</script>
+
+<script type="text/template" id="pickConfirmTemplate">
+  You are about to draft:
+  <div class="playerName">${ player.firstname } ${ player.lastname }</div>
+  <div class="playerPos">${ player.position }</div>
+  <div class="playerTeam">${ player.team }</div>
 </script>

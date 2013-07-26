@@ -15,6 +15,7 @@ var picker = {
   init: function() {
     this.connect();
     this.setupNavbar();
+    $('#footer').hide();
   },
 
   /**
@@ -47,6 +48,21 @@ var picker = {
     $('nav a').click(function() {
       picker.showList($(this).text());
     });
+
+    var self = this;
+    $('#makePick').click(function(e) {
+      self.populateConfirm();
+    });
+  },
+
+  /**
+   *
+   */
+  populateConfirm: function() {
+    var player = $(this._selected).data('player');
+    var tmpl = $('#pickConfirmTemplate').html();
+    var content = _.template(tmpl, { player: player });
+    $('#playerConfirm').html(content);
   },
 
   /**
@@ -61,13 +77,15 @@ var picker = {
     var elem = $('#playerlist');
 
     elem.empty();
-    this._selected = null;
+    this.clearSelection();
 
     var self = this;
     _.each(list, function(player) {
       var a = $('<a/>').attr('href', '#')
         .text(player.firstname + ' ' + player.lastname + ', ' + player.team);
-      $('<li/>').append(a).appendTo(elem).click(_.bind(self.select, self));
+      var li = $('<li/>');
+      li.append(a).appendTo(elem).click(_.bind(self.select, self));
+      li.data('player', player);
     });
 
     elem.listview('refresh');
@@ -77,6 +95,10 @@ var picker = {
    *
    */
   select: function(e) {
+    if (this._selected === e.currentTarget) {
+      return this.clearSelection();
+    }
+
     if (this._selected) {
       $(this._selected).attr("data-theme", "c").removeClass("ui-btn-up-b")
                        .removeClass('ui-btn-hover-b').addClass("ui-btn-up-c")
@@ -88,6 +110,22 @@ var picker = {
                       .addClass('ui-btn-hover-b');
 
     this._selected = e.currentTarget;
+
+    $('#footer').show();
+  },
+
+  clearSelection: function() {
+    if (!this._selected) {
+      return;
+    }
+
+    $(this._selected).attr("data-theme", "c").removeClass("ui-btn-up-b")
+                     .removeClass('ui-btn-hover-b').addClass("ui-btn-up-c")
+                     .addClass('ui-btn-hover-c');
+
+    this._selected = null;
+
+    $('#footer').hide();
   }
 };
 
