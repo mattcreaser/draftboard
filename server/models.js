@@ -48,7 +48,11 @@ function defineModels(db, cb) {
   });
 
   // There are many drafters to one draft.
-  //drafter.hasOne('draft', draft, { reverse: 'drafters', required: true });
+  drafter.hasOne('draft', draft, {
+    reverse: 'drafters',
+    required: true,
+    autoFetch: true
+  });
 
   async.each(_.toArray(models), function(model, next) {
     model.sync(next);
