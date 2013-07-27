@@ -37,6 +37,8 @@ auth.verify = function(email, password, cb) {
  * Middleware that checks to see if the session has previously logged in.
  */
 auth.middleware = function(req, res, next) {
-  if (!req.session.account) return res.send(403);
+  if (!req.session.account) {
+    return res.redirect('/login');
+  }
   next();
 };
