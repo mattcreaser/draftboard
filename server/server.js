@@ -25,7 +25,7 @@ app.configure(function() {
 
 });
 
-const INITIALIZATION_MODULES = ['authentication', 'controllers', 'models'];
+const INITIALIZATION_MODULES = ['authentication', 'controllers', 'models', 'realtime'];
 
 /**
  * Helper function for module initialization. Each module MUST have an
