@@ -30,8 +30,8 @@ join.get = function(req, res) {
     // Save the drafter object in the session.
     req.session.drafter = drafters[0];
 
-    // Redirect to the draft page.
-    res.redirect('/draft');
+    // Redirect to the picker page.
+    res.redirect('/picker');
   });
 };
 

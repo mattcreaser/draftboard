@@ -36,12 +36,16 @@
     <a data-role="button" data-rel="back">Cancel</a>
     <a data-role="button" id="confirmPick">Confirm Pick</a>
   </div>
+
+  <div id="notstarted" data-role="popup" data-dismissable="false">
+    The draft has not yet started.
+    <a data-role="button" id="startDraft">Start Draft</a>
+  </div>
 </div>
 
 <div data-role="page" id="waiting">
   Please wait for your turn to draft.
 </div>
-
 
 <script>
   var players = <%- JSON.stringify(players) %>;

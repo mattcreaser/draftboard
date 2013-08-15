@@ -11,7 +11,7 @@ var auth = require('../lib/auth');
 var rack = hat.rack();
 
 admin.get = function(req, res) {
-  models.drafter.find(function(err, drafters) {
+  models.drafter.find(['slot'], function(err, drafters) {
     if (err) return res.status(500).send(err);
 
     res.render('admin', { drafters: drafters });
@@ -23,12 +23,14 @@ admin.get = function(req, res) {
  */
 admin.post = function(req, res) {
   var name = req.body.name;
+  var slot = req.body.slot;
   var joinId = rack();
 
   models.drafter.create({
     name: name,
     joinId: joinId,
-    slot: 0
+    slot: slot,
+    draft_id: 4
   }, function(err, items) {
 
     if (err) return res.status(500).send(err);

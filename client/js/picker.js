@@ -15,6 +15,9 @@ var picker = {
   init: function() {
     $('#footer').hide();
 
+    _.bindAll(this, 'connected', 'pickMade', 'ready', 'error',
+             'populateConfirm', 'confirmPick', 'select', 'startDraft');
+
     this.connect();
     this.setupNavbar();
     this.setupConfirm();
@@ -26,16 +29,16 @@ var picker = {
   connect: function() {
     this._socket = io.connect();
 
-    $.mobile.loading('show', {
-      text: 'Connecting...',
-      textVisible: true
-    });
+    this.showLoading('Connecting...');
 
-    this._socket.on('connect', _.bind(this.connected, this));
-    this._socket.on('draft:pickMade', _.bind(this.pickMade, this));
-    this._socket.on('drafter:error', _.bind(this.error, this));
+    this._socket.on('connect', this.connected);
+    this._socket.on('draft:pickMade', this.pickMade);
+    this._socket.on('draft:error', this.error);
   },
 
+  /**
+   *
+   */
   error: function(data) {
     console.error('Received server error', data);
   },
@@ -44,17 +47,37 @@ var picker = {
    *
    */
   connected: function() {
-    this._socket.emit('drafter:ready');
-    $.mobile.loading('hide');
+    console.log('Connected');
+    this._socket.emit('picker:ready', this.ready);
+  },
+
+  /**
+   *
+   */
+  ready: function(data) {
+    if (data.error) {
+      return console.error(data.error);
+    }
+
+    console.log('Ready');
+
+    this.hideLoading();
     $.mobile.changePage('#pick', { changeHash: false });
-    this.showList('QB');
+
+    if (data.started) {
+      this.showList('QB');
+    } else {
+      $('#startDraft').click(this.startDraft);
+      $('#notstarted').popup('open');
+    }
   },
 
   /**
    *
    */
   pickMade: function(data) {
-
+    var player = data.player;
+    this.hideLoading();
   },
 
   /**
@@ -65,12 +88,15 @@ var picker = {
       picker.showList($(this).text());
     });
 
-    $('#makePick').click(_.bind(this.populateConfirm, this));
+    $('#makePick').click(this.populateConfirm);
   },
 
+  /**
+   *
+   */
   setupConfirm: function() {
-    $('#makePick').click(_.bind(this.populateConfirm, this));
-    $('#confirmPick').click(_.bind(this.confirmPick, this));
+    $('#makePick').click(this.populateConfirm);
+    $('#confirmPick').click(this.confirmPick);
   },
 
   /**
@@ -89,7 +115,24 @@ var picker = {
   confirmPick: function() {
     var player = $(this._selected).data('player');
     console.log('Confirming pick', player);
-    this._socket.emit('drafter:pick', player);
+    this._socket.emit('picker:pick', player, function(data) {
+      if (data.error) {
+        console.error(data.error);
+      }
+    });
+    this.showLoading('Making pick...');
+  },
+
+  /**
+   *
+   */
+  startDraft: function() {
+    console.log('Starting draft');
+    this._socket.emit('picker:startDraft', function(data) {
+      if (data.error) {
+        console.error(data.error);
+      }
+    });
   },
 
   /**
@@ -111,11 +154,21 @@ var picker = {
       var a = $('<a/>').attr('href', '#')
         .text(player.firstname + ' ' + player.lastname + ', ' + player.team);
       var li = $('<li/>');
-      li.append(a).appendTo(elem).click(_.bind(self.select, self));
+      li.append(a).appendTo(elem).click(self.select);
       li.data('player', player);
     });
 
     elem.listview('refresh');
+  },
+
+  showLoading: function(msg) {
+    $('body').addClass('ui-disabled');
+    $.mobile.loading('show', { text: msg, textVisible: true });
+  },
+
+  hideLoading: function() {
+    $('body').removeClass('ui-disabled');
+    $.mobile.loading('hide');
   },
 
   /**

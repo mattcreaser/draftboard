@@ -4,15 +4,25 @@
  * shown on the tv during the draft.
  */
 
-var controller = module.exports;
+var board = module.exports;
 
-controller.get = function(req, res) {
-  res.render('board');
+var models = require('../models');
+
+board.get = function(req, res) {
+  var draftId = 4;
+
+  models.draft.get(draftId, function(err, draft) {
+    if (err) {
+      return res.status(500).send();
+    }
+
+    req.session.draft = draft;
+
+    res.render('board');
+  });
 };
 
-//controller.get.param = 'id';
-
-controller.initialize = function(app, cb) {
-  app.get('/board', controller.get);
+board.initialize = function(app, cb) {
+  app.get('/board', board.get);
   cb();
 };

@@ -1,0 +1,282 @@
+/* 
+====================================================================================================
+LAYOUT
+====================================================================================================
+*/
+
+* {
+    border: 0;
+    font-size: 100%;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+div#header {
+    background-color: #000;
+    box-shadow: 0 0 20px #AAA;
+    color: #FFF;
+    font-size: 10pt;
+    margin-bottom: 25px;
+    padding: 25px 0;
+    text-align: center;
+}
+
+span#drafter-header {
+    display: block;
+    font-size: 24pt;
+    font-weight: bold;
+    margin: 10px 0;
+    text-shadow: 1px 1px #AAA;
+}
+
+div#content {
+    padding: 0 20px;
+}
+
+table#draftboard {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* 
+====================================================================================================
+LEGEND
+====================================================================================================
+*/
+
+div#legend {
+    border: 1px solid #AAA;
+    border-radius: 15px;
+    box-shadow: 0 0 20px #DDD;
+    margin: 0 auto 20px auto;
+    padding: 20px;
+    text-align: center;
+    width: 400px;
+}
+
+div#legend span.pos {
+    margin-left: 5px;
+    padding: 5px;
+}
+
+div.pos-qb, span.pos-qb {
+    background-color: #FF9999; /* red */
+}
+
+div.pos-wr, span.pos-wr {
+    background-color: #FFCC99; /* orange */
+}
+
+div.pos-rb, span.pos-rb {
+    background-color: #FFFFCC; /* yellow */
+}
+
+div.pos-te, span.pos-te {
+    background-color: #CCFFCC; /* green */
+}
+
+div.pos-k, span.pos-k {
+    background-color: #33CCFF; /* blue */
+}
+
+div.pos-def, span.pos-def {
+    background-color: #CCCCFF; /* purple */
+}
+
+/* 
+====================================================================================================
+TABLE CELLS
+====================================================================================================
+*/
+
+th, td {
+    padding: 5px;
+}
+
+tr.row-even, td.col-even {
+    background-color: #EEE;
+}
+
+tr.row-even td.col-even {
+    background-color: #DDD;
+}
+
+th.drafter, td.pick {
+    width: 8%;
+}
+
+th.round-number {
+    background-color: #FFF;
+    width: 2%;
+}
+
+th.current-drafter, tr.current-round th.round-number {
+    font-weight: bold;
+}
+
+/* 
+====================================================================================================
+PICKS
+====================================================================================================
+*/
+
+div.player {
+    overflow: hidden;
+    padding: 10px;
+}
+
+div.team {
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: block;
+    float: right;
+    height: 40px;
+    width: 40px;
+}
+
+span.first-name {
+    font-size: 8pt;
+}
+
+span.last-name {
+    display: block;
+    font-size: 16pt;
+}
+
+div.team-ari div.team {
+    background-image: url('../img/icons/ari.gif');
+}
+
+div.team-atl div.team {
+    background-image: url('../img/icons/atl.gif');
+}
+
+div.team-bal div.team {
+    background-image: url('../img/icons/bal.gif');
+}
+
+div.team-buf div.team {
+    background-image: url('../img/icons/buf.gif');
+}
+
+div.team-car div.team {
+    background-image: url('../img/icons/car.gif');
+}
+
+div.team-chi div.team {
+    background-image: url('../img/icons/chi.gif');
+}
+
+div.team-cin div.team {
+    background-image: url('../img/icons/ne.gif');
+}
+
+div.team-cle div.team {
+    background-image: url('../img/icons/cle.gif');
+}
+
+div.team-dal div.team {
+    background-image: url('../img/icons/dal.gif');
+}
+
+div.team-den div.team {
+    background-image: url('../img/icons/den.gif');
+}
+
+div.team-det div.team {
+    background-image: url('../img/icons/det.gif');
+}
+
+div.team-gb div.team {
+    background-image: url('../img/icons/gb.gif');
+}
+
+div.team-hou div.team {
+    background-image: url('../img/icons/hou.gif');
+}
+
+div.team-ind div.team {
+    background-image: url('../img/icons/ind.gif');
+}
+
+div.team-jac div.team {
+    background-image: url('../img/icons/jac.gif');
+}
+
+div.team-kc div.team {
+    background-image: url('../img/icons/kc.gif');
+}
+
+div.team-mia div.team {
+    background-image: url('../img/icons/mia.gif');
+}
+
+div.team-min div.team {
+    background-image: url('../img/icons/min.gif');
+}
+
+div.team-ne div.team {
+    background-image: url('../img/icons/ne.gif');
+}
+
+div.team-no div.team {
+    background-image: url('../img/icons/no.gif');
+}
+
+div.team-nyg div.team {
+    background-image: url('../img/icons/nyg.gif');
+}
+
+div.team-nyj div.team {
+    background-image: url('../img/icons/nyj.gif');
+}
+
+div.team-oak div.team {
+    background-image: url('../img/icons/oak.gif');
+}
+
+div.team-phi div.team {
+    background-image: url('../img/icons/phi.gif');
+}
+
+div.team-pit div.team {
+    background-image: url('../img/icons/pit.gif');
+}
+
+div.team-sd div.team {
+    background-image: url('../img/icons/sd.gif');
+}
+
+div.team-sf div.team {
+    background-image: url('../img/icons/sf.gif');
+}
+
+div.team-sea div.team {
+    background-image: url('../img/icons/sea.gif');
+}
+
+div.team-stl div.team {
+    background-image: url('../img/icons/stl.gif');
+}
+
+div.team-tb div.team {
+    background-image: url('../img/icons/tb.gif');
+}
+
+div.team-ten div.team {
+    background-image: url('../img/icons/ten.gif');
+}
+
+div.team-was div.team {
+    background-image: url('../img/icons/was.gif');
+}
+
+div.team-was div.team {
+    background-position: 0 -620px;
+}

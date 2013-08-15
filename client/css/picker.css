@@ -1,3 +1,7 @@
 #footer {
   display: none;
 }
+
+.playerName, .playerPos, .playerTeam {
+  text-align: center;
+}

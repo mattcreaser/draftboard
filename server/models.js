@@ -40,11 +40,27 @@ function defineModels(db, cb) {
     isAdmin: Boolean
   });
 
+  // A player represents a draftable player in the league.
   var player = models.player = db.define('player', {
     firstname: String,
     lastname: String,
     team: String,
     position: String
+  });
+
+  // A pick entry indicates a player that was drafted, who drafted them, and
+  // where in the draft the pick occurred.
+  var pick = models.pick = db.define('pick', {
+    round: Number,
+    slot: Number
+  });
+
+  // A pick is made by a drafter, for a player.
+  pick.hasOne('player', player);
+  pick.hasOne('draft', draft, {
+    reverse: 'picks',
+    required: true,
+    autoFetch: true
   });
 
   // There are many drafters to one draft.

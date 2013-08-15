@@ -4,6 +4,8 @@
 var _ = require('lodash');
 var logger = require('just-logging').getLogger();
 
+var draft = require('./draft');
+
 var drafter = module.exports;
 
 drafter.routes = {};
@@ -48,8 +50,8 @@ function RealtimeDrafter(model, connection) {
   this._model = model;
   this._connection = connection;
 
-  // Join the room for the draft.
-  this._connection.join('draft-' + this._model.draft.id);
+  this._draft = draft.byModel(this._model.draft);
+  this._draft.add(this);
 
   _.bindAll(this, 'pick');
 }
@@ -58,8 +60,7 @@ function RealtimeDrafter(model, connection) {
  *
  */
 RealtimeDrafter.prototype.destroy = function() {
-  // Leave the draft room.
-  this._connection.leave('draft-' + this._model.draft.id);
+  this._draft.remove(this);
 };
 
 /**
@@ -67,5 +68,17 @@ RealtimeDrafter.prototype.destroy = function() {
  */
 RealtimeDrafter.prototype.pick = function(req) {
   var player = req.data;
-  logger.debug(this._model.name, 'picking', player);
+  this._draft.pick(this, player, function(err) {
+    if (err) {
+      this._connection.emit('drafter:error', err.message);
+    }
+  }.bind(this));
+};
+
+RealtimeDrafter.prototype.getSlot = function() {
+  return this._model.slot;
+};
+
+RealtimeDrafter.prototype.isAdmin = function() {
+  return this._model.isAdmin;
 };
