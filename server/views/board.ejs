@@ -5,23 +5,7 @@
 <% script('static/js/board.js') %>
 <% stylesheet('static/css/board.css') %>
 
-<div id="header">
-    Currently Drafting:
-    <span id="drafter-header">Stephanie</span>
-    <span id="timer">3 minutes 45 seconds</span>
-</div>
-
 <div id="content">
-
-    <div id="legend">
-        Legend:
-        <span class="pos pos-qb">QB</span>
-        <span class="pos pos-wr">WR</span>
-        <span class="pos pos-rb">RB</span>
-        <span class="pos pos-te">TE</span>
-        <span class="pos pos-k">K</span>
-        <span class="pos pos-def">DEF</span>
-    </div>
 
     <table id="draftboard">
         <tr>
@@ -55,7 +39,13 @@
                     <span class="last-name">Charles</span>
                 </div>
             </td>
-            <td class="pick col-odd"> </td>
+            <td class="pick col-odd"> 
+                <div class="player pos-k team-min">
+                    <div class="team"></div>
+                    <span class="first-name">Somebodywitha</span>
+                    <span class="last-name">Stupidcrazylongnameohyeah</span>
+                </div>
+            </td>
             <td class="pick col-even"> </td>
             <td class="pick col-odd"> </td>
             <td class="pick col-even"> </td>

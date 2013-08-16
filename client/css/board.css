@@ -16,77 +16,14 @@ body {
     font-family: Arial, sans-serif;
 }
 
-div#header {
-    background-color: #000;
-    box-shadow: 0 0 20px #AAA;
-    color: #FFF;
-    font-size: 10pt;
-    margin-bottom: 25px;
-    padding: 25px 0;
-    text-align: center;
-}
-
-span#drafter-header {
-    display: block;
-    font-size: 24pt;
-    font-weight: bold;
-    margin: 10px 0;
-    text-shadow: 1px 1px #AAA;
-}
-
 div#content {
-    padding: 0 20px;
+    padding: 20px;
 }
 
 table#draftboard {
     border-collapse: collapse;
     table-layout: fixed;
     width: 100%;
-}
-
-/* 
-====================================================================================================
-LEGEND
-====================================================================================================
-*/
-
-div#legend {
-    border: 1px solid #AAA;
-    border-radius: 15px;
-    box-shadow: 0 0 20px #DDD;
-    margin: 0 auto 20px auto;
-    padding: 20px;
-    text-align: center;
-    width: 400px;
-}
-
-div#legend span.pos {
-    margin-left: 5px;
-    padding: 5px;
-}
-
-div.pos-qb, span.pos-qb {
-    background-color: #FF9999; /* red */
-}
-
-div.pos-wr, span.pos-wr {
-    background-color: #FFCC99; /* orange */
-}
-
-div.pos-rb, span.pos-rb {
-    background-color: #FFFFCC; /* yellow */
-}
-
-div.pos-te, span.pos-te {
-    background-color: #CCFFCC; /* green */
-}
-
-div.pos-k, span.pos-k {
-    background-color: #33CCFF; /* blue */
-}
-
-div.pos-def, span.pos-def {
-    background-color: #CCCCFF; /* purple */
 }
 
 /* 
@@ -126,17 +63,23 @@ PICKS
 ====================================================================================================
 */
 
+td.pick {
+    height: 76px;
+}
+
 div.player {
     overflow: hidden;
     padding: 10px;
+    position: relative;
 }
 
 div.team {
     background-repeat: no-repeat;
     background-size: contain;
-    display: block;
-    float: right;
     height: 40px;
+    right: 10px;
+    position: absolute;
+    top: 10px;
     width: 40px;
 }
 
@@ -147,6 +90,36 @@ span.first-name {
 span.last-name {
     display: block;
     font-size: 16pt;
+}
+
+/* 
+====================================================================================================
+PICKS - POSITIONS & TEAMS
+====================================================================================================
+*/
+
+div.pos-qb {
+    background-color: #FF9999; /* red */
+}
+
+div.pos-wr {
+    background-color: #FFCC99; /* orange */
+}
+
+div.pos-rb {
+    background-color: #FFFFCC; /* yellow */
+}
+
+div.pos-te {
+    background-color: #CCFFCC; /* green */
+}
+
+div.pos-k {
+    background-color: #33CCFF; /* blue */
+}
+
+div.pos-def {
+    background-color: #CCCCFF; /* purple */
 }
 
 div.team-ari div.team {
@@ -275,8 +248,4 @@ div.team-ten div.team {
 
 div.team-was div.team {
     background-image: url('../img/icons/was.gif');
-}
-
-div.team-was div.team {
-    background-position: 0 -620px;
 }
