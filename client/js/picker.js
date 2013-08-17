@@ -9,6 +9,11 @@ var picker = {
   // The selected li element.
   _selected: null,
 
+  // The info about the drafter. Populated on the ready response.
+  _info: null,
+
+  _players: null,
+
   /**
    *
    */
@@ -16,7 +21,8 @@ var picker = {
     $('#footer').hide();
 
     _.bindAll(this, 'connected', 'pickMade', 'ready', 'error',
-             'populateConfirm', 'confirmPick', 'select', 'startDraft');
+             'populateConfirm', 'confirmPick', 'select', 'startDraft',
+             'nowPicking', 'remainingPlayers');
 
     this.connect();
     this.setupNavbar();
@@ -33,6 +39,8 @@ var picker = {
 
     this._socket.on('connect', this.connected);
     this._socket.on('draft:pickMade', this.pickMade);
+    this._socket.on('draft:nowPicking', this.nowPicking);
+    this._socket.on('draft:remainingPlayers', this.remainingPlayers);
     this._socket.on('draft:error', this.error);
   },
 
@@ -59,17 +67,23 @@ var picker = {
       return console.error(data.error);
     }
 
+    this._info = data.info;
+
     console.log('Ready');
 
     this.hideLoading();
-    $.mobile.changePage('#pick', { changeHash: false });
 
-    if (data.started) {
-      this.showList('QB');
-    } else {
-      $('#startDraft').click(this.startDraft);
-      $('#notstarted').popup('open');
+    if (this._info.isAdmin) {
+      $('#startDraft').click(this.startDraft).show();
     }
+  },
+
+  /**
+   *
+   */
+  remainingPlayers: function(data) {
+    console.log('Got list of remaining players:', data);
+    this._players = _.groupBy(data.players, 'position');
   },
 
   /**
@@ -78,6 +92,24 @@ var picker = {
   pickMade: function(data) {
     var player = data.player;
     this.hideLoading();
+
+    console.log('Removing picked player', player);
+    var current = this._players[player.position];
+    this._players[player.position] = _.reject(current, player);
+  },
+
+  /**
+   *
+   */
+  nowPicking: function(data) {
+    this.hideLoading();
+
+    if (data.slot === this._info.slot || this._info.isAdmin) {
+      $.mobile.changePage('#pick');
+      this.showList('QB');
+    } else {
+      $.mobile.changePage('#waiting');
+    }
   },
 
   /**
@@ -139,9 +171,9 @@ var picker = {
    *
    */
   showList: function(page) {
-    var list = players[page] || [];
+    var list = this._players[page] || [];
     if (page === 'K/DEF') {
-      list = players.K.concat(players.DEF);
+      list = this._players.K.concat(this._players.DEF);
     }
 
     var elem = $('#playerlist');
@@ -161,11 +193,17 @@ var picker = {
     elem.listview('refresh');
   },
 
+  /**
+   *
+   */
   showLoading: function(msg) {
     $('body').addClass('ui-disabled');
     $.mobile.loading('show', { text: msg, textVisible: true });
   },
 
+  /**
+   *
+   */
   hideLoading: function() {
     $('body').removeClass('ui-disabled');
     $.mobile.loading('hide');

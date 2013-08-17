@@ -6,6 +6,7 @@
 
 var picker = module.exports;
 
+var async = require('async');
 var _ = require('lodash');
 var logger = require('just-logging').getLogger();
 
@@ -13,17 +14,8 @@ var models = require('../models');
 var draft = require('../realtime/draft');
 
 picker.get = function(req, res) {
-  models.player.find(['lastname', 'firstname'], function(err, players) {
-    if (err) {
-      return res.status(500).send();
-    }
-
-    players = _.groupBy(players, function(player) { return player.position; });
-
-    res.render('picker', {
-      drafter: req.session.drafter,
-      players: players
-    });
+  res.render('picker', {
+    drafter: req.session.drafter
   });
 };
 
@@ -59,11 +51,20 @@ picker.realtime = {
       return req.io.respond({ error: 'No drafter model'});
     }
 
-    // TODO : Respond with list of eligible players
-    req.io.respond({ players: [] });
+    var draftId = drafter.draft.id;
 
-    var realtimeDraft = draft.byModel(drafter.draft);
-    realtimeDraft.addPicker(req.io);
+    function getDraft(next) {
+      draft.byId(drafter.draft.id, next);
+    }
+
+    function addPicker(realtimeDraft, next) {
+      realtimeDraft.addPicker(req.io, next);
+    }
+
+    async.waterfall([getDraft, addPicker], function(err) {
+      if (err) { return req.io.respond({ error: err }); }
+      req.io.respond({ info: drafter });
+    });
   },
 
   /**
@@ -78,15 +79,18 @@ picker.realtime = {
       return req.io.respond({ error: 'No drafter model'});
     }
 
-    var realtimeDraft = draft.byModel(drafter.draft);
+    function getDraft(next) {
+      draft.byId(drafter.draft.id, next);
+    }
 
-    realtimeDraft.pick(drafter, player, function(err) {
-      if (err) {
-        return req.io.respond({ error: err.message });
-      }
+    function makePick(realtimeDraft, next) {
+      realtimeDraft.pick(drafter, player, next);
+    }
 
-      // Send an empty respond to indicate that no error occurred.
-      req.io.respond();
+    async.waterfall([getDraft, makePick], function(err) {
+      if (err) { return req.io.respond({ error: err} ) }
+
+      req.io.respond({});
     });
   },
 
@@ -106,14 +110,18 @@ picker.realtime = {
       return req.io.respond({ error: 'Must be admin to start draft' });
     }
 
-    var realtimeDraft = draft.byModel(drafter.draft);
+    function getDraft(next) {
+      draft.byId(drafter.draft.id, next);
+    }
 
-    realtimeDraft.start(function(err) {
-      if (err) {
-        return req.io.respond({ error: err.message });
-      }
+    function startDraft(realtimeDraft, next) {
+      realtimeDraft.start(next);
+    }
 
-      req.io.respond();
+    async.waterfall([getDraft, startDraft], function(err) {
+      if (err) { return req.io.respond({ error: err} ) }
+
+      req.io.respond({});
     });
   }
 

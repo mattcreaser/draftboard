@@ -5,3 +5,7 @@
 .playerName, .playerPos, .playerTeam {
   text-align: center;
 }
+
+#startDraft {
+  display: none;
+}

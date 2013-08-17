@@ -4,6 +4,10 @@
  * shown on the tv during the draft.
  */
 
+var async = require('async');
+var logger = require('just-logging').getLogger();
+var draft = require('../realtime/draft');
+
 var board = module.exports;
 
 var models = require('../models');
@@ -16,7 +20,7 @@ board.get = function(req, res) {
       return res.status(500).send();
     }
 
-    req.session.draft = draft;
+    req.session.draftInfo = draft;
 
     res.render('board');
   });
@@ -25,4 +29,31 @@ board.get = function(req, res) {
 board.initialize = function(app, cb) {
   app.get('/board', board.get);
   cb();
+};
+
+board.routes = {
+  ready: function(req) {
+    if (!req.session || !req.session.draftInfo) {
+      logger.error('No draft info found in session for ready route');
+      return req.io.emit('board:error', 'No draft info');
+    }
+
+    var info = req.session.draftInfo;
+
+    function getRealtimeDraft(next) {
+      draft.byId(info.id, next);
+    }
+
+    function addBoard(realtimeDraft, next) {
+      realtimeDraft.addBoard(next);
+    }
+
+    async.waterfall([getRealtimeDraft, addBoard], function(err) {
+      if (err) {
+        return req.io.emit('board:error', err.message);
+      }
+
+      // Board is registered with draft.
+    });
+  }
 };

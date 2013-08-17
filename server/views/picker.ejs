@@ -4,9 +4,15 @@
 <% script('static/js/lodash.js') %>
 <% script('socket.io/socket.io.js') %>
 <% script('static/js/picker.js') %>
+<% stylesheet('static/css/picker.css') %>
 <% stylesheet('http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css') %>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<div id="notstarted" data-role="page" class="ui-content">
+  The draft has not yet started.
+  <a data-role="button" id="startDraft">Start Draft</a>
+</div>
 
 <div data-role="page" id="pick">
 
@@ -37,23 +43,19 @@
     <a data-role="button" id="confirmPick">Confirm Pick</a>
   </div>
 
-  <div id="notstarted" data-role="popup" data-dismissable="false">
-    The draft has not yet started.
-    <a data-role="button" id="startDraft">Start Draft</a>
-  </div>
 </div>
 
 <div data-role="page" id="waiting">
   Please wait for your turn to draft.
 </div>
 
-<script>
-  var players = <%- JSON.stringify(players) %>;
-</script>
-
 <script type="text/template" id="pickConfirmTemplate">
   You are about to draft:
   <div class="playerName">${ player.firstname } ${ player.lastname }</div>
   <div class="playerPos">${ player.position }</div>
   <div class="playerTeam">${ player.team }</div>
+</script>
+
+<script type="text/template" id="waitingTemplate">
+  Current drafting: ${ round } ${ slot }
 </script>

@@ -15,8 +15,5 @@ realtime.initialize = function(app, cb) {
 
   var realtimes = autoLoader.load(REALTIME_PATH);
 
-  app.io.route('drafter', realtimes.drafter.routes);
-  app.io.route('board', realtimes.board.routes);
-
   realtimes.draft.initialize(app, cb);
 };
