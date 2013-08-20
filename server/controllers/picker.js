@@ -94,6 +94,39 @@ picker.realtime = {
     });
   },
 
+  createPlayer: function(req) {
+    var drafter = req.session.drafter;
+    var player = req.data;
+
+    if (!drafter) {
+      logger.error('No drafter model found in session for pick route');
+      return req.io.respond({ error: 'No drafter model'});
+    }
+
+    if (!player) {
+      logger.error('No player in create message');
+      return req.io.respond({ error: 'No player specified' });
+    }
+
+    if (!drafter.isAdmin) {
+      logger.error('Drafter is not admin in createPlayer');
+      return req.io.respond({
+        error: 'You must be an admin to create a player'
+      });
+    }
+
+    // TODO : Validate player.
+
+    models.player.create(player, function(err) {
+      if (err) {
+        logger.error('Error creating player', err);
+        return req.io.respond({ error: err.message });
+      }
+
+      return req.io.respond({});
+    });
+  },
+
   /**
    *
    */

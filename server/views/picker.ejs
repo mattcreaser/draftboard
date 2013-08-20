@@ -15,6 +15,55 @@
 </div>
 
 <div data-role="page" id="pick">
+  <div data-role="panel" id="createPlayer" data-position="right">
+    <form id="createForm">
+      <input type="text" id="createFirstname" placeholder="First Name" />
+      <input type="text" id="createLastname" placeholder="Last Name" />
+      <select id="createPosition">
+        <option value="QB">QB</option>
+        <option value="WR">WR</option>
+        <option value="RB">RB</option>
+        <option value="TE">TE</option>
+        <option value="K">K</option>
+        <option value="DEF">DEF</option>
+      </select>
+      <select id="createTeam">
+        <option value="ARI">Arizona</option>
+        <option value="ATL">Atlanta</option>
+        <option value="BAL">Baltimore</option>
+        <option value="BUF">Buffalo</option>
+        <option value="CAR">Carolina</option>
+        <option value="CHI">Chicago</option>
+        <option value="CIN">Cincinnati</option>
+        <option value="CLE">Cleveland</option>
+        <option value="DAL">Dallas</option>
+        <option value="DEN">Denver</option>
+        <option value="DET">Detroit</option>
+        <option value="GB">Green Bay</option>
+        <option value="HOU">Houston</option>
+        <option value="IND">Indianapolis</option>
+        <option value="JAC">Jacksonville</option>
+        <option value="KC">Kansas City</option>
+        <option value="MIA">Miami</option>
+        <option value="MIN">Minnesota</option>
+        <option value="NE">New England</option>
+        <option value="NO">New Orleans</option>
+        <option value="NYJ">New York Jets</option>
+        <option value="NYG">New York Giants</option>
+        <option value="OAK">Oakland</option>
+        <option value="PHI">Philadelphia</option>
+        <option value="PIT">Pittsburgh</option>
+        <option value="STL">St. Louis</option>
+        <option value="SD">San Diego</option>
+        <option value="SF">San Francisco</option>
+        <option value="SEA">Seattle</option>
+        <option value="TB">Tampa Bay</option>
+        <option value="TEN">Tennessee</option>
+        <option value="WAS">Washington</option>
+      </select>
+      <a id="createSubmit" data-role="button">Create Player</a>
+    </form>
+  </div>
 
   <div data-role="header" data-position="fixed">
     <nav data-role="navbar">

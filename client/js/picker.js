@@ -14,6 +14,8 @@ var picker = {
 
   _players: null,
 
+  _currentPage: 'QB',
+
   /**
    *
    */
@@ -22,7 +24,7 @@ var picker = {
 
     _.bindAll(this, 'connected', 'pickMade', 'ready', 'error',
              'populateConfirm', 'confirmPick', 'select', 'startDraft',
-             'nowPicking', 'remainingPlayers');
+             'nowPicking', 'remainingPlayers', 'createPlayer');
 
     this.connect();
     this.setupNavbar();
@@ -75,6 +77,7 @@ var picker = {
 
     if (this._info.isAdmin) {
       $('#startDraft').click(this.startDraft).show();
+      this.setupCreatePlayer();
     }
   },
 
@@ -106,7 +109,7 @@ var picker = {
 
     if (data.slot === this._info.slot || this._info.isAdmin) {
       $.mobile.changePage('#pick');
-      this.showList('QB');
+      this.showList(this._currentPage);
     } else {
       $.mobile.changePage('#waiting');
     }
@@ -129,6 +132,46 @@ var picker = {
   setupConfirm: function() {
     $('#makePick').click(this.populateConfirm);
     $('#confirmPick').click(this.confirmPick);
+  },
+
+  /**
+   *
+   */
+  setupCreatePlayer: function() {
+    var self = this;
+
+    $(document).on('swipeleft', '#pick', function(e) {
+      if ($.mobile.activePage.jqmData('panel') !== 'open') {
+        $('#createPlayer').panel('open');
+      }
+    });
+
+    $('#createSubmit').click(this.createPlayer);
+  },
+
+  /**
+   *
+   */
+  createPlayer: function() {
+    var player = {
+      firstname: $('#createFirstname').val(),
+      lastname: $('#createLastname').val(),
+      position: $('#createPosition').val(),
+      team: $('#createTeam').val()
+    };
+
+    console.log('Creating player', player);
+
+    var self = this;
+    this._socket.emit('picker:createPlayer', player, function(data) {
+      if (data.error) {
+        return console.error('Could not create player', data.error);
+      }
+
+      self._players[player.position].push(player);
+      $('#createPlayer').panel('close');
+      self.showList(self._currentPage);
+    });
   },
 
   /**
@@ -191,6 +234,7 @@ var picker = {
     });
 
     elem.listview('refresh');
+    this._currentPage = page;
   },
 
   /**
