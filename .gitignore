@@ -13,4 +13,6 @@ logs
 results
 node_modules
 
+server/config/config.js
+
 npm-debug.log

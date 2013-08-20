@@ -1,0 +1,16 @@
+var config = {
+
+  server: {
+    protocol: 'http',
+    domain: 'localhost',
+    port: '3000'
+  },
+
+  gmail: {
+    user: 'gmailuser@gmail.com',
+    password: 'password'
+  }
+
+};
+
+module.exports = config;
