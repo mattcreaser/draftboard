@@ -20,7 +20,30 @@ var program = require('commander');
 var models = require('../models.js');
 
 var DEFAULT_FILE = './players.txt';
-var REGEX = /^(\S+) (.*) (\w+) - (\w+)$/;
+var REGEX = /^([-\w\s\.\']+), (\w+), (\w+)$/;
+
+function insertPlayer(player) {
+  models.player.exists(player, function(err, exists) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+
+    if (exists) {
+      if (program.verbose) {
+        console.log('Player already exists, skipping', player);
+      }
+      return;
+    }
+
+    //console.log('Creating player', player);
+    models.player.create(player, function(err){
+      if (err) {
+        console.error('Could not create player', player, err);
+      }
+    });
+  });
+}
 
 function readFile(filename) {
   filename = filename || DEFAULT_FILE;
@@ -29,35 +52,27 @@ function readFile(filename) {
   console.log('Reading file:', where);
 
   lineReader.eachLine(where, function(line) {
-    console.log('Processing', line);
+    if (program.verbose) console.log('Processing', line);
 
     var matches = line.match(REGEX);
 
-    if (!matches || matches.length < 5) {
+    if (!matches || matches.length < 4) {
       console.log('Could not process', line);
       process.exit(1);
     }
 
-    var player = {
-      firstname: matches[1],
-      lastname: matches[2],
-      team: matches[3],
-      position: matches[4]
-    };
+    var parts = matches[1].split(' ');
 
-    models.player.exists(player, function(err, exists) {
-      if (err) {
-        console.error(err);
-        process.exit(1);
-      }
-
-      if (exists) {
-        console.log('Player already exists, skipping', player);
-        return;
-      }
-
-      models.player.create(player, function(){});
-    });
+    if (parts.length == 2) {
+      insertPlayer({
+        firstname: parts[0],
+        lastname: parts[1],
+        team: matches[2],
+        position: matches[3]
+      });
+    } else {
+      console.warn('Skipping ambigious name', matches[1]);
+    }
   });
 }
 
@@ -71,6 +86,9 @@ function exec(filename) {
     readFile(filename);
   });
 }
+
+program
+.option('-v, --verbose', 'Verbose output', false);
 
 program
 .command('load [filename]')
