@@ -56,11 +56,13 @@ function defineModels(db, cb) {
   });
 
   // A pick is made by a drafter, for a player.
-  pick.hasOne('player', player);
-  pick.hasOne('draft', draft, {
-    reverse: 'picks',
+  pick.hasOne('player', player, {
     required: true,
     autoFetch: true
+  });
+  pick.hasOne('draft', draft, {
+    reverse: 'picks',
+    required: true
   });
 
   // There are many drafters to one draft.
