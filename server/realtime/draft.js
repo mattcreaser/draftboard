@@ -80,7 +80,7 @@ Draft.prototype.init = function(cb) {
     // There is one slot per drafter.
     this._numSlots = this._drafters.length;
 
-    this._pickStartTime = null;
+    this._pickStartTime = Date.now();
 
     var numPicks = this._picks.length;
     this._round = Math.floor(numPicks / this._numSlots);
@@ -145,8 +145,6 @@ Draft.prototype.addBoard = function(connection, cb) {
     return cb();
   }
 
-  // TODO: Send the board all of the picks made so far.
-
   cb();
 
   // Let the board know who is picking.
@@ -155,6 +153,11 @@ Draft.prototype.addBoard = function(connection, cb) {
     slot: this._slot,
     round: this._round,
     elapsedTime: elapsedTime
+  });
+
+  var self = this;
+  _.each(this._picks, function(pick) {
+    self.room.broadcast('draft:pickMade', pick);
   });
 };
 
@@ -229,23 +232,25 @@ Draft.prototype.pick = function(drafter, player, cb) {
   }
 
   // Make the pick.
-  async.series([checkPlayerAvailable, makePick], function(err, items) {
+  async.series([checkPlayerAvailable, makePick], function(err, pick) {
     if (err) {
       logger.error('Unable to save pick', err);
       self.room.broadcast('draft:error', 'Unable to save pick');
       return cb(err);
     }
 
-    self._picks = self._picks.concat(items);
+    // TODO: Sometimes the node-orm2 #create returns an array with an undefined
+    // first index. Why?!
+    if (_.isArray(pick)) {
+      pick = pick[1];
+    }
+
+    self._picks.push(pick);
     self._remainingPlayers = _.reject(self._remainingPlayers, player);
 
     logger.debug('Pick saved');
 
-    self.room.broadcast('draft:pickMade', {
-      player: player,
-      round: self._round,
-      slot: self._slot
-    });
+    self.room.broadcast('draft:pickMade', pick);
 
     self.advanceToNextSlot();
 
