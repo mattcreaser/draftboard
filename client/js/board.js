@@ -1,16 +1,19 @@
 /*jshint browser:true */
-/*global io, $, _ */
+/*global io, $, _, PickTimer */
 
 var board = {
 
   // The socket.io connection
   _socket: null,
 
+  // The pickTimer.
+  _timer: null,
+
   /**
    *
    */
   init: function() {
-    _.bindAll(this, 'connected', 'error', 'pickMade', 'nowPicking');
+    _.bindAll(this, 'connected', 'error', 'pickMade', 'nowPicking', 'ready');
 
     this.connect();
   },
@@ -34,7 +37,18 @@ var board = {
    */
   connected: function() {
     console.log('Connected');
-    this._socket.emit('board:ready');
+    this._socket.emit('board:ready', this.ready);
+  },
+
+  /**
+   *
+   */
+  ready: function(data) {
+    if (data.error) {
+      return console.error(data.error);
+    }
+
+    console.log('Ready');
   },
 
   /**
@@ -49,6 +63,14 @@ var board = {
    */
   pickMade: function(data) {
     console.log('pickMade', data);
+
+    var row = $('#draftboard tbody tr:eq(' + (data.round) + ')');
+    var cell = row.find('td:eq(' + (data.slot) + ')');
+
+    var tmpl = $('#pickTemplate').html();
+    var content = _.template(tmpl, data.player);
+
+    cell.html(content);
   },
 
   /**
@@ -56,6 +78,20 @@ var board = {
    */
   nowPicking: function(data) {
     console.log('nowPicking', data);
+    $('.current-drafter').removeClass('current-drafter');
+    $('#draftboard thead th:eq(' + data.slot + ')').addClass('current-drafter');
+
+    if (this._timer) {
+      this._timer.stop();
+    }
+
+    this._timer = new PickTimer();
+    this._timer.elapsedTime = data.elapsedTime;
+
+    var row = $('#draftboard tbody tr:eq(' + (data.round) + ')');
+    var cell = row.find('td:eq(' + (data.slot) + ')');
+
+    cell.append(this._timer.el);
   }
 
 };
