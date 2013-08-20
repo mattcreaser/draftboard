@@ -6,6 +6,7 @@ LAYOUT
 
 * {
     border: 0;
+    box-sizing: border-box;
     font-size: 100%;
     font-weight: normal;
     margin: 0;
@@ -27,13 +28,15 @@ table#draftboard {
 }
 
 /* 
-====================================================================================================
+================================================================================
 TABLE CELLS
-====================================================================================================
+================================================================================
 */
 
 th, td {
-    padding: 5px;
+    border: 1px solid #666;
+    overflow: hidden;
+    position: relative;
 }
 
 tr.row-even, td.col-even {
@@ -45,37 +48,46 @@ tr.row-even td.col-even {
 }
 
 th.drafter, td.pick {
-    width: 8%;
+    width: 8.5%;
+}
+
+th.drafter {
+  font-size: 18pt;
 }
 
 th.round-number {
     background-color: #FFF;
-    width: 2%;
 }
 
 th.current-drafter, tr.current-round th.round-number {
     font-weight: bold;
+    background-color: #000;
+    color: #fff;
 }
 
 /* 
-====================================================================================================
+================================================================================
 PICKS
-====================================================================================================
+================================================================================
 */
 
 td.pick {
-    height: 76px;
+    height: 64px;
+}
+
+td.pick > div {
+  height: 100%;
 }
 
 div.player {
+    height: 100%;
     overflow: hidden;
-    padding: 10px;
+    padding: 0 5px;
     position: relative;
-    text-shadow: 1px 1px 1px #FFF;
 }
 
 div.team {
-    background-position: top center;
+    background-position: center center;
     background-repeat: no-repeat;
     background-size: contain;
     height: 100%;
@@ -87,20 +99,23 @@ div.team {
 }
 
 span.first-name {
-    font-size: 8pt;
+    font-size: 14pt;
     position: relative;
 }
 
 span.last-name {
     display: block;
-    font-size: 16pt;
+    font-family: Impact, Charcoal, sans-serif;
+    font-size: 22pt;
+    margin-top: -3px;
     position: relative;
+    white-space: nowrap;
 }
 
 /* 
-====================================================================================================
+===============================================================================
 PICKS - POSITIONS & TEAMS
-====================================================================================================
+===============================================================================
 */
 
 div.pos-qb {
@@ -253,4 +268,27 @@ div.team-ten div.team {
 
 div.team-was div.team {
     background-image: url('../img/icons/was.gif');
+}
+
+/* 
+===============================================================================
+Timer
+===============================================================================
+*/
+
+.timer {
+  background-color: #fff;
+  font-size: 24pt;
+  height: 100%;
+  padding-top: 19px;
+  text-align: center;
+  text-shadow: 0px 0px 2px #888;
+}
+
+.timerOverdue {
+  background-color: #f00;
+}
+
+.timerLong {
+  background-color: #ff0;
 }

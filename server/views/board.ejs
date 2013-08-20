@@ -1,17 +1,32 @@
 <% layout('layout') %>
 <% script('http://code.jquery.com/jquery-1.10.0.min.js') %>
 <% script('static/js/lodash.js') %>
+<% script('static/js/backbone.js') %>
+<% script('static/js/underscore.string.js') %>
 <% script('socket.io/socket.io.js') %>
+<% script('static/js/pickTimer.js') %>
 <% script('static/js/board.js') %>
 <% stylesheet('static/css/board.css') %>
 
-<div id="content">
+<script type="text/template" id="pickTemplate">
+<div class="pos-${ position.toLowerCase() } team-${ team.toLowerCase() }">
+  <div class="team"></div>
+  <div class="player">
+    <span class="first-name">${ firstname }</span>
+    <span class="last-name">${ lastname }</span>
+  </div>
+</div>
+</script>
+
+<script type="text/template" id="pickTimerTemplate">
+  <div class="timer ${ extraClass }">${ displayedTime }</div>
+</script>
 
     <table id="draftboard">
+        <thead>
         <tr>
-            <td></td>
             <th class="drafter">Matt</th>
-            <th class="drafter current-drafter">Stephanie</th>
+            <th class="drafter">Stephanie</th>
             <th class="drafter">Brad</th>
             <th class="drafter">Lincoln</th>
             <th class="drafter">Jon</th>
@@ -23,29 +38,12 @@
             <th class="drafter">Oliver</th>
             <th class="drafter">Crater Face</th>
         </tr>
+        </thead>
+        <body>
         <tr class="round row-odd">
-            <th class="round-number">1</th>
-            <td class="pick col-odd">
-                <div class="player pos-qb team-ne">
-                    <div class="team"></div>
-                    <span class="first-name">Tom</span>
-                    <span class="last-name">Brady</span>
-                </div>
-            </td>
-            <td class="pick col-even">
-                <div class="player pos-rb team-kc">
-                    <div class="team"></div>
-                    <span class="first-name">Jamaal</span>
-                    <span class="last-name">Charles</span>
-                </div>
-            </td>
-            <td class="pick col-odd"> 
-                <div class="player pos-k team-min">
-                    <div class="team"></div>
-                    <span class="first-name">Somebodywitha</span>
-                    <span class="last-name">Stupidcrazylongnameohyeah</span>
-                </div>
-            </td>
+            <td class="pick col-odd"> </td>
+            <td class="pick col-even"> </td>
+            <td class="pick col-odd"> </td>
             <td class="pick col-even"> </td>
             <td class="pick col-odd"> </td>
             <td class="pick col-even"> </td>
@@ -56,8 +54,7 @@
             <td class="pick col-odd"> </td>
             <td class="pick col-even"> </td>
         </tr>
-        <tr class="round row-even current-round">
-            <th class="round-number">2</th>
+        <tr class="round row-even">
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -72,7 +69,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-odd">
-            <th class="round-number">3</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -87,7 +83,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-even">
-            <th class="round-number">4</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -102,7 +97,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-odd">
-            <th class="round-number">5</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -117,7 +111,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-even">
-            <th class="round-number">6</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -132,7 +125,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-odd">
-            <th class="round-number">7</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -147,7 +139,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-even">
-            <th class="round-number">8</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -162,7 +153,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-odd">
-            <th class="round-number">9</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -177,7 +167,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-even">
-            <th class="round-number">10</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -192,7 +181,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-odd">
-            <th class="round-number">11</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -207,7 +195,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-even">
-            <th class="round-number">12</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -222,7 +209,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-odd">
-            <th class="round-number">13</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -237,7 +223,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-even">
-            <th class="round-number">14</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -252,7 +237,6 @@
             <td class="pick col-even"></td>
         </tr>
         <tr class="round row-odd">
-            <th class="round-number">15</th>
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
             <td class="pick col-odd"></td>
@@ -266,22 +250,6 @@
             <td class="pick col-odd"></td>
             <td class="pick col-even"></td>
         </tr>
-        <tr class="round row-even">
-            <th class="round-number">16</th>
-            <td class="pick col-odd"></td>
-            <td class="pick col-even"></td>
-            <td class="pick col-odd"></td>
-            <td class="pick col-even"></td>
-            <td class="pick col-odd"></td>
-            <td class="pick col-even"></td>
-            <td class="pick col-odd"></td>
-            <td class="pick col-even"></td>
-            <td class="pick col-odd"></td>
-            <td class="pick col-even"></td>
-            <td class="pick col-odd"></td>
-            <td class="pick col-even"></td>
-        </tr>
+        </tbody>
     </table>
-
-</div>
 

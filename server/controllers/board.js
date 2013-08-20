@@ -28,10 +28,13 @@ board.get = function(req, res) {
 
 board.initialize = function(app, cb) {
   app.get('/board', board.get);
+
+  app.io.route('board', board.realtime);
+
   cb();
 };
 
-board.routes = {
+board.realtime = {
   ready: function(req) {
     if (!req.session || !req.session.draftInfo) {
       logger.error('No draft info found in session for ready route');
@@ -45,15 +48,16 @@ board.routes = {
     }
 
     function addBoard(realtimeDraft, next) {
-      realtimeDraft.addBoard(next);
+      realtimeDraft.addBoard(req.io, next);
     }
 
     async.waterfall([getRealtimeDraft, addBoard], function(err) {
       if (err) {
-        return req.io.emit('board:error', err.message);
+        return req.io.respond({ error: err });
       }
 
       // Board is registered with draft.
+      req.io.respond({});
     });
   }
 };
