@@ -117,13 +117,13 @@ picker.realtime = {
 
     // TODO : Validate player.
 
-    models.player.create(player, function(err) {
+    models.player.create(player, function(err, newPlayer) {
       if (err) {
         logger.error('Error creating player', err);
         return req.io.respond({ error: err.message });
       }
 
-      return req.io.respond({});
+      return req.io.respond({ player: newPlayer });
     });
   },
 

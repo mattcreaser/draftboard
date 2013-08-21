@@ -168,7 +168,7 @@ var picker = {
         return console.error('Could not create player', data.error);
       }
 
-      self._players[player.position].push(player);
+      self._players[player.position].push(data.player);
       $('#createPlayer').panel('close');
       self.showList(self._currentPage);
     });
@@ -194,6 +194,7 @@ var picker = {
       if (data.error) {
         console.error(data.error);
       }
+      $('input[data-type="search"]').val("");
     });
     this.showLoading('Making pick...');
   },
