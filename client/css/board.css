@@ -82,7 +82,7 @@ td.pick > div {
 div.player {
     height: 100%;
     overflow: hidden;
-    padding: 0 5px;
+    padding: 5px 5px 0 5px;
     position: relative;
 }
 
@@ -99,14 +99,14 @@ div.team {
 }
 
 span.first-name {
-    font-size: 14pt;
+    font-size: 20px;
     position: relative;
 }
 
 span.last-name {
     display: block;
     font-family: Impact, Charcoal, sans-serif;
-    font-size: 22pt;
+    font-size: 30px;
     margin-top: -3px;
     position: relative;
     white-space: nowrap;
