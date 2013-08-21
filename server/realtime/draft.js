@@ -245,6 +245,7 @@ Draft.prototype.pick = function(drafter, player, cb) {
       pick = pick[1];
     }
 
+    pick.player = player;
     self._picks.push(pick);
     self._remainingPlayers = _.reject(self._remainingPlayers, player);
 
