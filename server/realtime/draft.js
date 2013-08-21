@@ -54,7 +54,7 @@ Draft.prototype.init = function(cb) {
 
   function loadDrafters(picks, next) {
     self._picks = picks;
-    self._model.getDrafters(next);
+    self._model.getDrafters(['slot'], next);
   }
 
   function loadPlayers(drafters, next) {
@@ -75,10 +75,11 @@ Draft.prototype.init = function(cb) {
     if (err) return cb(err);
 
     // The draft has already started if the model has a start time.
-    this._started = !!this._model.start;
+    this._started = !!this._model.start && this._model.start.getTime() > 0;
 
     // There is one slot per drafter.
     this._numSlots = this._drafters.length;
+    this._numRounds = 14; // TODO : Don't hardcode.
 
     this._pickStartTime = Date.now();
 
@@ -87,7 +88,7 @@ Draft.prototype.init = function(cb) {
     var snaking = (this._round % 2) === 1;
     this._slot = numPicks % this._numSlots;
     if (snaking) {
-      this._slot = this._numSlots - this._slot;
+      this._slot = this._numSlots - this._slot - 1;
     }
 
     // Instantiate the realtime room.
@@ -107,6 +108,11 @@ Draft.prototype.init = function(cb) {
 Draft.prototype.addPicker = function(connection, cb) {
   connection.join('draft-' + this._model.id);
 
+  // Send a list of remaining players.
+  connection.emit('draft:remainingPlayers', {
+    players: this._remainingPlayers
+  });
+
   // Nothing else to do if the draft hasn't started yet.
   if (!this._started) {
     return cb();
@@ -116,16 +122,12 @@ Draft.prototype.addPicker = function(connection, cb) {
   // TODO: This is kind of messed up.
   cb();
 
-  // Send a list of remaining players.
-  connection.emit('draft:remainingPlayers', {
-    players: this._remainingPlayers
-  });
-
   // Let the picker know who is picking.
   var elapsedTime = Date.now() - this._pickStartTime;
   connection.emit('draft:nowPicking', {
     slot: this._slot,
     round: this._round,
+    drafter: this._drafters[this._slot],
     elapsedTime: elapsedTime
   });
 };
@@ -152,6 +154,7 @@ Draft.prototype.addBoard = function(connection, cb) {
   connection.emit('draft:nowPicking', {
     slot: this._slot,
     round: this._round,
+    drafter: this._drafters[this._slot],
     elapsedTime: elapsedTime
   });
 
@@ -278,6 +281,12 @@ Draft.prototype.advanceToNextSlot = function() {
 
   logger.debug('Draft slot advanced to round', this._round, 'slot', this._slot);
 
+  if (this._round >= this._numRounds) {
+    this.room.broadcast('draft:over');
+    this._started = false;
+    return;
+  }
+
   this.sendNowPicking();
 };
 
@@ -294,7 +303,7 @@ Draft.prototype.sendNowPicking = function() {
   this.room.broadcast('draft:nowPicking', {
     slot: this._slot,
     round: this._round,
-    name: drafter.name,
+    drafter: this._drafters[this._slot],
     elapsedTime: 0 // There is never elapsed time when the pick first starts.
   });
 };

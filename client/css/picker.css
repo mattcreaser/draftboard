@@ -6,6 +6,15 @@
   text-align: center;
 }
 
-#startDraft {
+#startBlock {
   display: none;
+}
+
+#notstarted p {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px 0px #000;
+  margin: 5px;
+  padding: 10px;
+  text-align: center;
 }

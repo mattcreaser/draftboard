@@ -9,9 +9,14 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<div id="notstarted" data-role="page" class="ui-content">
-  The draft has not yet started.
-  <a data-role="button" id="startDraft">Start Draft</a>
+<div id="notstarted" data-role="page">
+  <h1>Halifax Fantasy Football Friendly Draft</h1>
+  <p>
+    The draft has not started. Please wait.
+  </p>
+  <div id="startBlock">
+    <a data-role="button" id="startDraft">Start Draft</a>
+  </div>
 </div>
 
 <div data-role="page" id="pick">
@@ -95,7 +100,10 @@
 </div>
 
 <div data-role="page" id="waiting">
-  Please wait for your turn to draft.
+</div>
+
+<div data-role="page" id="over">
+  Thank you. The draft has now ended.
 </div>
 
 <script type="text/template" id="pickConfirmTemplate">
@@ -106,5 +114,6 @@
 </script>
 
 <script type="text/template" id="waitingTemplate">
-  Current drafting: ${ round } ${ slot }
+  <div>Currently drafting: <span class="currentDrafter">${ name }</span></div>
+  <div>${ remaining } picks until your next turn.</div>
 </script>

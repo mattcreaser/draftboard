@@ -24,7 +24,7 @@ var picker = {
 
     _.bindAll(this, 'connected', 'pickMade', 'ready', 'error',
              'populateConfirm', 'confirmPick', 'select', 'startDraft',
-             'nowPicking', 'remainingPlayers', 'createPlayer');
+             'nowPicking', 'remainingPlayers', 'createPlayer', 'draftOver');
 
     this.connect();
     this.setupNavbar();
@@ -43,6 +43,7 @@ var picker = {
     this._socket.on('draft:pickMade', this.pickMade);
     this._socket.on('draft:nowPicking', this.nowPicking);
     this._socket.on('draft:remainingPlayers', this.remainingPlayers);
+    this._socket.on('draft:over', this.draftOver);
     this._socket.on('draft:error', this.error);
   },
 
@@ -76,7 +77,8 @@ var picker = {
     this.hideLoading();
 
     if (this._info.isAdmin) {
-      $('#startDraft').click(this.startDraft).show();
+      $('#startBlock').show();
+      $('#startDraft').click(this.startDraft);
       this.setupCreatePlayer();
     }
   },
@@ -104,14 +106,39 @@ var picker = {
   /**
    *
    */
+  draftOver: function(data) {
+    this.hideLoading();
+    $.mobile.changePage('#over');
+    this._socket.disconnect();
+  },
+
+  /**
+   *
+   */
   nowPicking: function(data) {
     this.hideLoading();
 
     if (data.slot === this._info.slot || this._info.isAdmin) {
-      $.mobile.changePage('#pick');
+      $.mobile.changePage('#pick', { changeHash: false });
       this.showList(this._currentPage);
     } else {
-      $.mobile.changePage('#waiting');
+      var snaking = (data.round % 2 === 1);
+      var remaining = (snaking) ? data.slot - this._info.slot :
+                                  this._info.slot - data.slot;
+
+      if (remaining < 0) {
+        var toTurn = snaking ? this._info.slot : 11 - this._info.slot;
+        remaining = toTurn * 2 + remaining + 1;
+      }
+
+      var tmpl = $('#waitingTemplate').html();
+      var html = _.template(tmpl, {
+        name: data.drafter.name,
+        remaining: remaining
+      });
+
+      $('#waiting').html(html);
+      $.mobile.changePage('#waiting', { changeHash: false });
     }
   },
 
