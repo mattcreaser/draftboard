@@ -15,8 +15,13 @@
       <td><%= drafter.slot %></td>
       <td><%= drafter.name %></td>
       <td><a href="/join/<%= drafter.joinId %>"><%= drafter.joinId %></a></td>
-      <td><input type="email" value="<%= drafter.email || '' %>" placeholder="Enter an invitation email here" /></td>
-      <td><button>Send Invitation</button></td>
+      <td>
+        <form action="/admin/invite" method="post">
+          <input type="email" value="<%= drafter.email || '' %>" placeholder="Enter an invitation email here" name="email" />
+          <input type="hidden" name="joinId" value="<%= drafter.joinId %>" />
+          <input type="submit" value="Send Invitation" />
+        </form>
+      </td>
     </tr>
   <% } %>
   </tbody>

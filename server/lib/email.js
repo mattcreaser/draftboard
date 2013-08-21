@@ -38,6 +38,8 @@ email.send = function(address, joinId, cb) {
           '</a></p>'
   };
 
+  console.log('Email options:', mailOptions);
+
   transport.sendMail(mailOptions, function(err) {
     transport.close();
     cb(err);
